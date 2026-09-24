@@ -1,0 +1,439 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   MAKE IT CLICK — DESIGN TOKENS
+   Single source of truth. No hex values anywhere else in the codebase.
+   ========================================================================== */
+
+@theme {
+  /* --- Colour -------------------------------------------------------------
+     Ratio discipline: ~80% ink/paper, ~15% grey, ~5% blue.
+     Blue is never decoration. It marks interaction, change and selection.  */
+  --color-ink: #0b0b0b;
+  --color-paper: #f7f5ef;
+  --color-blue: #0066ff;
+  --color-line: #e8e6e1;
+
+  /* The palette's secondary grey is #787878, which reaches only 4.05:1 on
+     warm white — short of WCAG AA for the 11px labels it is used for. This
+     is that grey darkened to 4.89:1. Same role, same read, legible.        */
+  --color-grey: #6b6b6b;
+
+  /* Ink-surface companions (borders / muted text on dark sections) */
+  --color-line-dark: #232323;
+  --color-grey-dark: #8a8a8a;
+
+  /* Electric Blue is a mid-tone: as small text it lands at 4.43:1 on paper
+     and 4.07:1 on ink, both under AA. These two are the same blue, shifted
+     just far enough to clear it.
+     RULE: fills, rules, and display-size glyphs use --color-blue. Only
+     small blue TEXT uses these.                                            */
+  --color-blue-on-paper: #005af0; /* 5.18:1 on warm white */
+  --color-blue-on-ink: #3d8bff; /* 5.94:1 on black      */
+
+  /* The reverse case: text ON an Electric Blue fill. Paper reaches only
+     4.43:1 there; pure white reaches 4.83:1. The fill never changes —
+     the blue is the brand — so the text on it is what moves.
+     RULE: anything set on bg-blue (labels, chips, button text on hover,
+     selection) uses --color-on-blue, never paper.                          */
+  --color-on-blue: #ffffff;
+
+  /* --- Type ---------------------------------------------------------------- */
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* The hero statement is set on four deliberate lines, not wrapped. The cap
+     is the largest size at which the longest of those lines still fits the
+     1296px content column; the floor is the largest that fits at 375px. */
+  /* The middle term also answers to height: a phone held sideways is wide
+     but only ~390px tall, and 8.2vw alone would set two lines to fill it.
+     In portrait and on desktop the width term is the smaller one, so
+     nothing changes there. */
+  --text-display: clamp(2.375rem, min(8.2vw, 14svh), 7.5rem);
+  --text-display--line-height: 0.88;
+  --text-display--letter-spacing: -0.045em;
+
+  --text-headline: clamp(2.25rem, 7.4vw, 6.5rem);
+  --text-headline--line-height: 0.94;
+  --text-headline--letter-spacing: -0.035em;
+
+  --text-title: clamp(1.625rem, 4vw, 3rem);
+  --text-title--line-height: 1;
+  --text-title--letter-spacing: -0.03em;
+
+  --text-sub: clamp(1.125rem, 2vw, 1.5rem);
+  --text-sub--line-height: 1.35;
+  --text-sub--letter-spacing: -0.015em;
+
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1.35;
+  --text-label--letter-spacing: 0.16em;
+
+  /* --- Radius — used sparingly. Three values, no more. --------------------- */
+  --radius-none: 0px;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+
+  /* --- Rhythm -------------------------------------------------------------- */
+  --spacing-gutter: clamp(1.25rem, 5vw, 4.5rem);
+  --spacing-section: clamp(5.5rem, 12vw, 10.5rem);
+
+  /* --- Motion — one easing, three durations. ------------------------------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* ==========================================================================
+   BASE
+   ========================================================================== */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    /* Nav is sticky: keep anchored sections clear of it. */
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Hard guarantee against horizontal overflow on small screens. */
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  p {
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  /* Selection is an interaction → it earns the blue. */
+  ::selection {
+    background-color: var(--color-blue);
+    color: var(--color-on-blue);
+  }
+
+  /* Visible, branded, never removed. */
+  :focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 3px;
+    border-radius: var(--radius-xs);
+  }
+
+  /* Native cursor is preserved everywhere — the custom label only trails it. */
+  button,
+  summary,
+  [role="button"] {
+    cursor: pointer;
+  }
+
+  img,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+/* ==========================================================================
+   PRIMITIVES
+   ========================================================================== */
+
+@layer components {
+  .container-editorial {
+    width: 100%;
+    max-width: 90rem;
+    margin-inline: auto;
+    padding-inline: var(--spacing-gutter);
+  }
+
+  /* Small uppercase meta text: section numbers, categories, field labels. */
+  .label {
+    font-family: var(--font-sans);
+    font-size: var(--text-label);
+    font-weight: 500;
+    letter-spacing: var(--text-label--letter-spacing);
+    /* 1.35, not 1: labels wrap on phones (section names, captions, the
+       disclaimer), and at 1 their lines collide. A single-line chip grows
+       ~4px, which it can afford. */
+    line-height: var(--text-label--line-height);
+    text-transform: uppercase;
+  }
+
+  /* Touch scrollers whose affordance is the next item peeking into view,
+     not a scrollbar. Keyboard users get arrow-key control instead. */
+  .scroller {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scroller::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Frames whose control is a full-bleed hit area (before/after, hero demo).
+     The control's own outline sits outside it and is clipped by the frame's
+     overflow, so the frame draws the ring on the control's behalf. */
+  .focus-frame:has(:focus-visible) {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 3px;
+  }
+
+  /* The slider's input is invisible; its handle is what the eye follows. */
+  .compare:has(.compare-input:focus-visible) .compare-handle {
+    box-shadow:
+      0 0 0 3px var(--color-paper),
+      0 0 0 5px var(--color-blue);
+  }
+
+  /* Thin rule used to build the editorial grid. */
+  .rule {
+    border: 0;
+    border-top: 1px solid var(--color-line);
+    margin: 0;
+  }
+
+  .rule-dark {
+    border: 0;
+    border-top: 1px solid var(--color-line-dark);
+    margin: 0;
+  }
+}
+
+/* ==========================================================================
+   MOTION — click → reaction. Nothing moves without a reason.
+   ========================================================================== */
+
+/* Scroll reveal: opacity + a short lift. Applied by <Reveal>. */
+@keyframes mic-reveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Content is hidden ahead of its entrance ONLY when JavaScript is running
+   (the `js` class is set by an inline script before first paint). Without
+   it, nothing is ever waiting on an observer: the page is simply there.
+
+   Fill mode is `both`, so an entrance holds its first frame through its
+   delay. That is what lets the hero animate from the server-rendered HTML
+   alone — no hidden base state is needed for a block that is already in. */
+.js [data-reveal] {
+  opacity: 0;
+}
+
+[data-reveal="in"] {
+  animation: mic-reveal 0.75s var(--ease-out-expo) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+/* Type gets a harder entrance than a fade: the line is wiped up from its own
+   baseline, the way a printed line arrives. Headlines only — it clips
+   overflow, so it must never wrap an interface.
+ *
+ * The clip lives on an INNER element. Putting it on the observed element
+ * shrinks that element's intersection rectangle to nothing, so the observer
+ * never fires and the headline hides itself forever.
+ *
+ * Insets run slightly negative on every side: display type is set at a
+ * line-height below 1, so caps and descenders sit outside the line box and
+ * a clip at exactly 0 would shave them. */
+@keyframes mic-reveal-mask {
+  from {
+    clip-path: inset(-0.3em -0.1em 100% -0.1em);
+    transform: translate3d(0, 0.28em, 0);
+  }
+  to {
+    clip-path: inset(-0.3em -0.1em -0.3em -0.1em);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* A masked line is hidden by its clip, not by opacity. */
+.js [data-reveal-variant="mask"] {
+  opacity: 1;
+}
+
+.mic-mask {
+  display: block;
+}
+
+.js .mic-mask {
+  clip-path: inset(-0.3em -0.1em 100% -0.1em);
+}
+
+[data-reveal="in"] .mic-mask {
+  animation: mic-reveal-mask 0.95s var(--ease-out-expo) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+/* The proprietary brand gesture: radial lines that fire on click. */
+@keyframes mic-burst-line {
+  0% {
+    opacity: 1;
+    transform: rotate(var(--burst-angle)) translateY(var(--burst-start)) scaleY(0.4);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--burst-angle)) translateY(var(--burst-end)) scaleY(1);
+  }
+}
+
+.mic-burst {
+  position: fixed;
+  z-index: 90;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.mic-burst span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: 2px;
+  height: 9px;
+  margin-left: -1px;
+  margin-top: -4.5px;
+  border-radius: var(--radius-none);
+  background-color: var(--color-blue);
+  transform-origin: 50% 50%;
+  animation: mic-burst-line 0.42s var(--ease-out-expo) forwards;
+}
+
+/* A rule struck through a word, drawn once when its block is revealed. */
+@keyframes mic-strike {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.mic-strike {
+  transform-origin: left center;
+}
+
+.js .mic-strike {
+  transform: scaleX(0);
+}
+
+[data-reveal="in"] .mic-strike {
+  animation: mic-strike 0.55s var(--ease-out-expo) 0.4s both;
+}
+
+/* Idle attractor on the hero demo — a single slow pulse, not a toy. */
+@keyframes mic-pulse {
+  0%,
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  20%,
+  45% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* A three-second timer bar. Used once, to show what a visitor actually reads. */
+@keyframes mic-timer {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* A single slow band of brand language. Austere on purpose: flat colour,
+   no radius, no shadow, no gradient — the opposite of a template marquee. */
+@keyframes mic-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: mic-marquee 44s linear infinite;
+}
+
+/* Paused by its control, by being offscreen (data-running, set in
+   Marquee.tsx), or by a reader lingering on it. Pausing holds the phrase in
+   place rather than resetting — resuming picks up exactly where it stopped. */
+.marquee[data-running="false"] .marquee-track,
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    /* Stand still rather than snap to the end of the loop. */
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   ACCESSIBILITY — motion is an enhancement, never a dependency.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .js [data-reveal] {
+    opacity: 1;
+  }
+
+  .js .mic-mask {
+    clip-path: none;
+  }
+
+  .mic-burst {
+    display: none;
+  }
+}
