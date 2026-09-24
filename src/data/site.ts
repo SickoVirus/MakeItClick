@@ -55,7 +55,7 @@ export type SocialLink = {
 };
 
 export const socials: SocialLink[] = [
-  { label: "Instagram", href: null },
+  { label: "Instagram", href: "https://www.instagram.com/makeitclickpe/" },
   { label: "TikTok", href: "https://www.tiktok.com/@makeitclickpe" },
   { label: "LinkedIn", href: null },
 ];
