@@ -4,7 +4,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ClickBurst } from "@/components/ui/ClickBurst";
 import { CursorLabel } from "@/components/ui/CursorLabel";
-import { site } from "@/data/site";
+import { site, socials } from "@/data/site";
 import "./globals.css";
 
 /* Self-hosted and subset at build time by next/font — no render-blocking
@@ -94,6 +94,8 @@ const structuredData = {
   slogan: site.tagline,
   areaServed: "PE",
   availableLanguage: ["es", "en"],
+  // Only accounts that exist: a social with no URL yet is simply left out.
+  sameAs: socials.flatMap((social) => (social.href ? [social.href] : [])),
   serviceType: [
     "Web design",
     "Website redesign",
