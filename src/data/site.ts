@@ -1,7 +1,7 @@
 /**
  * Global brand + site constants.
  *
- * TODO (owner): replace `contactEmail` and fill in the social `href`s below.
+ * TODO (owner): fill in the social `href`s below once the accounts exist.
  * Socials with `href: null` render as plain text — we never ship a dead link.
  */
 
@@ -16,8 +16,8 @@ export const site = {
   location: "Lima / Remoto",
   founded: 2026,
 
-  // TODO (owner): point this at the real inbox before launch.
-  contactEmail: "hello@makeitclick.co",
+  /** The CTA, the footer and the prefilled email all point here. */
+  contactEmail: "makeitclickpe@gmail.com",
 } as const;
 
 export const nav = [

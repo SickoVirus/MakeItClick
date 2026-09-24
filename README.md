@@ -40,12 +40,13 @@ copy, projects, or services.
 
 ### Before launch
 
-Two placeholders in `src/data/site.ts` are marked `TODO`:
+`contactEmail` in `src/data/site.ts` is the real inbox
+(`makeitclickpe@gmail.com`); the whole CTA and both mail links point at it.
 
-1. **`contactEmail`** — currently `hello@makeitclick.co`. The whole CTA and both
-   mail links point at it.
-2. **`socials`** — each entry has `href: null`, which renders the name as plain
-   text rather than a dead link. Fill in a URL and it becomes a real link.
+One placeholder remains, marked `TODO`:
+
+- **`socials`** — each entry has `href: null`, which renders the name as plain
+  text rather than a dead link. Fill in a URL and it becomes a real link.
 
 ---
 

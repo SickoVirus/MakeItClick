@@ -37,7 +37,8 @@ A redesign-first studio for businesses that already work. The site doesn't descr
 - All editable content lives in `src/data/`; components should not need opening to change copy, projects or services.
 - Before/after work is rendered as live data-driven miniature sites (`src/components/ui/MiniSite.tsx`), not screenshots. Each project's palette, type and layout is content in `projects.ts`, not a site token.
 - Each business appears on the page exactly once. A project gets one home.
-- Open before launch: the real contact email (placeholder `hello@makeitclick.co`) and social account URLs (currently null, rendered as inert text).
+- Contact inbox: `makeitclickpe@gmail.com`.
+- Open before launch: social account URLs (currently null, rendered as inert text).
 
 ## Brand Commitments
 
