@@ -40,6 +40,11 @@ copy, projects, or services.
 
 ### Before launch
 
+The site's public address (canonical URL, sitemap, robots, social card) is
+never hard-coded. On Vercel it comes from `VERCEL_PROJECT_PRODUCTION_URL`,
+which is the `*.vercel.app` domain until a custom domain is added and that
+domain afterwards. Set `NEXT_PUBLIC_SITE_URL` to override it.
+
 `contactEmail` in `src/data/site.ts` is the real inbox
 (`makeitclickpe@gmail.com`); the whole CTA and both mail links point at it.
 

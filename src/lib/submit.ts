@@ -58,7 +58,7 @@ export async function submitWebsite(raw: string): Promise<SubmissionResult> {
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ website, source: "makeitclick.co" }),
+        body: JSON.stringify({ website, source: "sitio-web" }),
         signal: AbortSignal.timeout(TIMEOUT_MS),
       });
       if (response.status === 429) {
